@@ -1,8 +1,14 @@
 <html>
   <head>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.4.1/lib/p5.js"></script>
-    <script src="sketch.js"></script>
+    <script src="./ccapture/CCapture.js"></script>
+    <script src="./ccapture/webm-writer-0.2.0.js"></script>
+    <script src="./ccapture/download.js"></script>
     <script src="palettes.js"></script>
+    <script src="sierpinski.js"></script>  
+    <script>
+      var capturer = new CCapture( { format: 'webm', framerate: 36, verbose: false } );
+    </script>  
   </head>
   <body>
     <main>
