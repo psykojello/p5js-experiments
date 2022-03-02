@@ -1,13 +1,12 @@
 var pal = []
 var cnv
 
-function sierpinski(left, right, top, iterations, midpoint, color="gray"){
+function sierpinski(left, right, top, iterations, midpoint, palette, altpallete, index){
 
     if(iterations == 0)
     {
-        fill(color)
-        // stroke(color)
-        // stroke('black')
+        
+        fill(palette[index])
         noStroke()
         triangle(left.x, left.y, right.x, right.y, top.x, top.y)
         return 
@@ -17,38 +16,14 @@ function sierpinski(left, right, top, iterations, midpoint, color="gray"){
     var rightmid = p5.Vector.lerp(right, top, midpoint)
     var leftmid = p5.Vector.lerp(top, left, midpoint)
     
-    pal = softrainbow
-    // if(hole) pal = blues; else pal = warmrainbow
+    pal = blues
 
-    sierpinski(left, basemid, leftmid, iterations - 1, midpoint, color=pal[0])
-    sierpinski(basemid, right, rightmid, iterations - 1, midpoint, color = pal[1])
-    sierpinski(leftmid, rightmid, top, iterations - 1, midpoint, color=pal[2])
-    sierpinski2(leftmid, basemid, rightmid, iterations - 1, midpoint, color=pal[3])
+    sierpinski(left, basemid, leftmid, iterations - 1, midpoint, palette, altpallete, 2)
+    sierpinski(basemid, right, rightmid, iterations - 1, midpoint, palette, altpallete, 4)
+    sierpinski(leftmid, rightmid, top, iterations - 1, midpoint, palette, altpallete, 6)
+    sierpinski(leftmid, basemid, rightmid, iterations - 1, .5, altpallete, altpallete, 8)
 }
 
-function sierpinski2(left, right, top, iterations, midpoint, color="gray", hole = false){
-
-    if(iterations == 0)
-    {
-        fill(color)
-        noStroke()
-        triangle(left.x, left.y, right.x, right.y, top.x, top.y)
-        return 
-    }
-
-    var basemid = p5.Vector.lerp(left, right, midpoint)
-    var rightmid = p5.Vector.lerp(right, top, midpoint)
-    var leftmid = p5.Vector.lerp(top, left, midpoint)
-    // pal = blues
-    // if(hole) pal = blues; else pal = warmrainbow
-    // var base = 4
-    
-
-    sierpinski2(left, basemid, leftmid, iterations - 1, midpoint, color=pal[5])
-    sierpinski2(basemid, right, rightmid, iterations - 1, midpoint, color = pal[6])
-    sierpinski2(leftmid, rightmid, top, iterations - 1, midpoint, color=pal[7])
-    sierpinski2(leftmid, basemid, rightmid, iterations - 1, midpoint, color=pal[8], true)
-}
 var prevmid = 0.5
 var rot = 0
 var minskew = 0.00
@@ -68,12 +43,12 @@ function keyTyped(){
 
 function setup(){
     angleMode(DEGREES)
-    pal = softrainbow
+    // pal = pinks
     cnv = createCanvas(800, 800)
 }
 
 function draw(){
-    background(pal[4])
+    background(pinks[4])
 
     // scl*=1.001
     var l = width*scl
@@ -81,15 +56,6 @@ function draw(){
     var cy = l/2 * tan(30)
     var cyy = h - cy
     var r = (l/2) / cos(30)
-    stroke("white")
-    strokeWeight(2)
-    noFill()
-    // circle(width/2, height/2, r*2)
-
-
-    stroke("white")
-    strokeWeight(2)
-    // noFill()
 
     var midpoint = prevmid + inc
     if(midpoint>1-minskew || midpoint < minskew){        
@@ -109,7 +75,7 @@ function draw(){
     sierpinski(
         createVector(-l/2, cy), 
         createVector(l/2, cy), 
-        createVector(0, -cyy), 5, midpoint)
+        createVector(0, -cyy), 5, midpoint, blues, pinks, 0)
 
     prevmid = midpoint
 
