@@ -11,7 +11,7 @@ var scl = 0.8
 
 var enableCapture = false
 var captureStart = 1
-var captureEnd = 5
+var captureEnd = 720-1
 var _isCapturing = false
 
 function startCapture(){
@@ -34,12 +34,17 @@ function doCapture() {
 
 
 
-function sierpinski(left, right, top, iterations, midpoint, palette, altpallete, index){
+function sierpinski(left, right, top, iterations, midpoint, palette, altpallete, index, skip = false){
 
-    if(iterations == 0)
+    if(iterations === 0)
     {        
+        if(skip) return
+        
         fill(palette[index])
         noStroke()
+
+        // noFill()
+        // stroke(palette[3])
         triangle(left.x, left.y, right.x, right.y, top.x, top.y)
         return 
     }
@@ -48,10 +53,10 @@ function sierpinski(left, right, top, iterations, midpoint, palette, altpallete,
     var rightmid = p5.Vector.lerp(right, top, midpoint)
     var leftmid = p5.Vector.lerp(top, left, midpoint)
 
-    sierpinski(left, basemid, leftmid, iterations - 1, midpoint, palette, altpallete, 2)
-    sierpinski(basemid, right, rightmid, iterations - 1, midpoint, palette, altpallete, 4)
-    sierpinski(leftmid, rightmid, top, iterations - 1, midpoint, palette, altpallete, 6)
-    sierpinski(leftmid, basemid, rightmid, iterations - 1, .5, altpallete, altpallete, 8)
+    sierpinski(left, basemid, leftmid, iterations - 1, midpoint, palette, altpallete, 0, false)
+    sierpinski(basemid, right, rightmid, iterations - 1, midpoint, palette, altpallete, 1, false)
+    sierpinski(leftmid, rightmid, top, iterations - 1, midpoint, palette, altpallete, 2, false)
+    sierpinski(leftmid, basemid, rightmid, iterations - 1, midpoint, altpallete, altpallete, 3, false)
 }
 
 
@@ -75,6 +80,7 @@ function setup(){
     
     angleMode(DEGREES)
     createCanvas(800, 800)
+    strokeWeight(2)
 }
 
 function draw(){
@@ -82,7 +88,7 @@ function draw(){
     startCapture()
     
     
-    background(pinks[4])
+    background(softrainbow[9])
 
     var l = width*scl
     var h = l * sin(60)
@@ -112,7 +118,7 @@ function draw(){
         createVector(left, bottom), 
         createVector(right, bottom), 
         createVector(midx, top),
-        5, midpoint, blues, pinks, 0)
+        5, midpoint, softrainbow.slice(0,4), softrainbow.slice(6,10), 0)
 
     prevmid = midpoint
 
