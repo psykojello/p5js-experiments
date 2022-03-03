@@ -2,10 +2,10 @@ var prevmid = 0.5
 var rot = 0
 var minskew = 0.00
 
-var inc = 1/360.0/2.0
-var rotspeed = 1/2.0
-// var inc = 0
-// var rotspeed = 0
+var inc = 0
+var rotspeed = 0
+inc = 1/360.0/2.0
+rotspeed = 1/2.0
 
 var scl = 0.8
 
@@ -41,10 +41,10 @@ function sierpinski(left, right, top, iterations, midpoint, palette, altpallete,
         if(skip) return
         
         fill(palette[index])
-        noStroke()
+        // noStroke()
 
         // noFill()
-        // stroke(palette[3])
+        stroke(palette[index])
         triangle(left.x, left.y, right.x, right.y, top.x, top.y)
         return 
     }
@@ -80,7 +80,7 @@ function setup(){
     
     angleMode(DEGREES)
     createCanvas(800, 800)
-    strokeWeight(2)
+    strokeWeight(1)
 }
 
 function draw(){
@@ -100,15 +100,18 @@ function draw(){
     var bottom = h * 1/3
 
     var midpoint = prevmid + inc
-    if(midpoint>1-minskew || midpoint < minskew){        
-        inc = -inc
-    }
+    // if(midpoint>1-minskew || midpoint < minskew){        
+    //     inc = -inc
+    // }
     if(midpoint>1)
-        midpoint = 1
+        midpoint = midpoint-1
     if(midpoint<0)
-        midpoint = 0
+        midpoint = 1+midpoint
 
     rot += rotspeed
+    if(rot>360){
+        rot = rot-360
+    }
     
     push()
     translate(width/2, height/2)
