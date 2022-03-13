@@ -4,8 +4,8 @@ var minskew = 0.00
 
 var inc = 0
 var rotspeed = 0
-inc = 1/360.0/2.0
-rotspeed = 1/2.0
+// inc = -1/360.0/2.0
+// rotspeed = 1/2.0
 
 var scl = 0.8
 
@@ -36,14 +36,13 @@ function doCapture() {
 
 function sierpinski(left, right, top, iterations, midpoint, palette, altpallete, index, skip = false){
 
-    if(iterations === 0)
+    if(iterations <= 0)
     {        
         if(skip) return
         
-        fill(palette[index])
         // noStroke()
-
         // noFill()
+        fill(palette[index])
         stroke(palette[index])
         triangle(left.x, left.y, right.x, right.y, top.x, top.y)
         return 
@@ -54,9 +53,9 @@ function sierpinski(left, right, top, iterations, midpoint, palette, altpallete,
     var leftmid = p5.Vector.lerp(top, left, midpoint)
 
     sierpinski(left, basemid, leftmid, iterations - 1, midpoint, palette, altpallete, 0, false)
-    sierpinski(basemid, right, rightmid, iterations - 1, midpoint, palette, altpallete, 1, false)
-    sierpinski(leftmid, rightmid, top, iterations - 1, midpoint, palette, altpallete, 2, false)
-    sierpinski(leftmid, basemid, rightmid, iterations - 1, midpoint, altpallete, altpallete, 3, false)
+    sierpinski(basemid, right, rightmid, iterations - 2, midpoint, palette, altpallete, 1, false)
+    sierpinski(leftmid, rightmid, top, iterations - 3, midpoint, palette, altpallete, 2, false)
+    sierpinski(leftmid, basemid, rightmid, iterations - 4, midpoint, altpallete, altpallete, 3, false)
 }
 
 
@@ -87,43 +86,58 @@ function draw(){
 
     startCapture()
     
-    
     background(softrainbow[9])
 
-    var l = width*scl
-    var h = l * sin(60)
-    
-    var left = -l/2
-    var right = l/2
-    var midx = 0
-    var top = - h* 2/3
-    var bottom = h * 1/3
 
+    //Calculate Midpoint
     var midpoint = prevmid + inc
     // if(midpoint>1-minskew || midpoint < minskew){        
-    //     inc = -inc
+        
     // }
-    if(midpoint>1)
-        midpoint = midpoint-1
-    if(midpoint<0)
-        midpoint = 1+midpoint
 
+    var pingpong = 1
+
+    if(midpoint>1-minskew){
+        if(pingpong){
+            midpoint = 2-midpoint
+            inc = -inc
+        }
+        else {
+            midpoint = 1-midpoint
+        }
+    }
+        
+    if(midpoint<minskew){
+        if(pingpong){
+            midpoint = minskew + minskew - midpoint
+            inc = -inc
+        }
+        else
+        {
+            midpoint = 1 - minskew - minskew + midpoint
+        }
+    }
+
+    prevmid = midpoint
+
+    //Do rotation
     rot += rotspeed
     if(rot>360){
         rot = rot-360
     }
     
+    var l = width*scl
+    var h = l * sin(60)
+
     push()
     translate(width/2, height/2)
     rotate(rot)
-    
-    sierpinski(
-        createVector(left, bottom), 
-        createVector(right, bottom), 
-        createVector(midx, top),
-        5, midpoint, softrainbow.slice(0,4), softrainbow.slice(6,10), 0)
 
-    prevmid = midpoint
+    sierpinski(
+        createVector(-l/2, h * 1/3), 
+        createVector(l/2, h * 1/3), 
+        createVector(0, -h* 2/3),
+        7, midpoint, softrainbow.slice(0,4), softrainbow.slice(6,10), 0)
 
     pop()
 

@@ -1,0 +1,6 @@
+play with smoothing lines
+gravity grid, warp the grid under an object
+isometric lines (they move upwards and then +- 33 degrees)
+file:///C:/Users/aravikumar/Downloads/120-57.pdf geometric patterns
+concentric circles
+mandelbrot with progressively smaller circles 
